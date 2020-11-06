@@ -3,12 +3,18 @@
     <span class="search-options-label">
       What are you searching for?
     </span>
+    <radio-buttons />
   </div>
 </template>
 
 <script>
+import RadioButtons from './RadionButtons'
+
 export default {
-  name: 'search-options'
+  name: 'search-options',
+  components: {
+    RadioButtons
+  }
 }
 </script>
 

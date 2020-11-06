@@ -3,7 +3,7 @@
     <span class="search-options-label">
       What are you searching for?
     </span>
-    <radio-buttons />
+    <radio-buttons v-model="picked" />
   </div>
 </template>
 
@@ -12,6 +12,9 @@ import RadioButtons from './RadionButtons'
 
 export default {
   name: 'search-options',
+  data: () => ({
+    picked: 'Movies'
+  }),
   components: {
     RadioButtons
   }

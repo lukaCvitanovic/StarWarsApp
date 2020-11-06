@@ -1,0 +1,19 @@
+$colors: (
+    //Brand colors
+    "primary": #0ab463,
+    //Secondary colors
+    "accent": #0094ff,
+    //Neutrals
+    "white": #ffffff,
+    "black": #000000,
+    "grey": #c4c4c4,
+    "grey-warm": #848484,
+    //Tints
+    "grey-light": #ededed
+);
+
+:root {
+    @each $name, $value in $colors {
+        --color-#{$name}: #{$value};
+    }
+}

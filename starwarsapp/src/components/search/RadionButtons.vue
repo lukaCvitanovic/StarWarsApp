@@ -4,7 +4,7 @@
       <input
         id="people"
         type="radio"
-        value="People"
+        :value="PEOPLE"
         v-model="picked"
         @change="onChange" >
       <label class="radio-button-label ml-m" for="people">
@@ -15,7 +15,7 @@
       <input
         id="movies"
         type="radio"
-        value="Movies"
+        :value="MOVIES"
         v-model="picked"
         @change="onChange" >
       <label class="radio-button-label ml-m" for="movies">
@@ -26,6 +26,9 @@
 </template>
 
 <script>
+import searchOptions from '@/config/searchOptions.js'
+const { PEOPLE, MOVIES } = searchOptions
+
 export default {
   name: 'radio-buttons',
   model: {
@@ -33,7 +36,9 @@ export default {
     event: 'changed'
   },
   data: () => ({
-    picked: ''
+    picked: '',
+    PEOPLE: PEOPLE,
+    MOVIES: MOVIES
   }),
   props: {
     value: {

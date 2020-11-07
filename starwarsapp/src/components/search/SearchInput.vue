@@ -7,6 +7,9 @@
 </template>
 
 <script>
+import searchOptions from '@/config/searchOptions.js'
+const { PEOPLE } = searchOptions
+
 export default {
   name: 'search-input',
   data: () => ({
@@ -24,8 +27,13 @@ export default {
       required: true
     }
   },
-  created () {
-    this.plh = this.searchType === 'People' ? this.plhPeople : this.plhrMovies
+  watch: {
+    searchType: {
+      immediate: true,
+      handler () {
+        this.plh = this.searchType === PEOPLE ? this.plhPeople : this.plhrMovies
+      }
+    }
   }
 }
 </script>

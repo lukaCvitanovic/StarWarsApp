@@ -13,12 +13,14 @@
 import RadioButtons from './RadionButtons'
 import SearchInput from './SearchInput'
 import BaseButton from '../common/BaseButton'
+import searchOptions from '@/config/searchOptions.js'
+const { MOVIES } = searchOptions
 
 export default {
   name: 'search-options',
   data: () => ({
-    picked: 'Movies',
-    value: 'asga',
+    picked: MOVIES,
+    value: '',
     buttonText: 'Search'
   }),
   components: {

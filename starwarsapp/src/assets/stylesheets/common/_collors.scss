@@ -7,11 +7,12 @@ $colors: (
     "white": #ffffff,
     "black": #000000,
     "grey": #c4c4c4,
-    "grey-dark": #848484,
+    "grey-dimm": #848484,
+    "grey-dark": #383838,
     "grey-shadow": #dadada,
     //Tints
     "grey-light": #ededed,
-    "grey-dark-75": rgba(132, 132, 132, 0.75)
+    "grey-dimm-75": rgba(132, 132, 132, 0.75)
 );
 
 :root {
@@ -20,9 +21,9 @@ $colors: (
     }
 
     .box-shadow {
-        box-shadow: 0 0.0625rem 0.125rem 0 var(--color-dark-75);
+        box-shadow: 0 0.0625rem 0.125rem 0 var(--color-grey-dimm-75);
     }
     .border {
-        border: border solid 0.0625rem var(--color-grey-shadow);
+        border: border solid 0.0625rem var(--color-grey-dimm-75);
     }
 }

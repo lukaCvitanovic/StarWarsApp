@@ -4,6 +4,7 @@ $font-family-primary: 'Montserrat', sans-serif;
 $font-weight-bold: bold;
 
 :root {
+  --font-family: $font-family-primary;
   --font-size-s: 0.875rem;
   --font-size-l: 1.125rem;
 }

@@ -4,19 +4,24 @@
       What are you searching for?
     </span>
     <radio-buttons v-model="picked" />
+    <search-input v-model="value" :search-type="picked"/>
+    <span>{{ value }}</span>
   </div>
 </template>
 
 <script>
 import RadioButtons from './RadionButtons'
+import SearchInput from './SearchInput'
 
 export default {
   name: 'search-options',
   data: () => ({
-    picked: 'Movies'
+    picked: 'Movies',
+    value: 'asga'
   }),
   components: {
-    RadioButtons
+    RadioButtons,
+    SearchInput
   }
 }
 </script>

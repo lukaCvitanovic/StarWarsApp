@@ -1,5 +1,5 @@
 <template>
-  <button class="base-button">
+  <button class="base-button" v-bind="$attrs">
     <span>{{ text }}</span>
   </button>
 </template>
@@ -11,6 +11,10 @@ export default {
     text: {
       type: String,
       required: true
+    },
+    disable: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -24,6 +28,10 @@ export default {
   height: 2.125rem;
   background-color: var(--color-primary);
   cursor: pointer;
+
+  &:disabled {
+    background-color: var(--color-grey);
+  }
 
   span {
     font-family: var(--font-family);

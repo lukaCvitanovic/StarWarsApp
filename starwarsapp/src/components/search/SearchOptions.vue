@@ -5,7 +5,7 @@
     </span>
     <radio-buttons class="mt-l" v-model="picked" />
     <search-input class="mt-l px-m" v-model="value" :search-type="picked"/>
-    <base-button class="search-button mt-l" :text="buttonText" />
+    <base-button class="search-button mt-l" :text="buttonText" :disabled="disabled" />
   </div>
 </template>
 
@@ -23,6 +23,9 @@ export default {
     value: '',
     buttonText: 'Search'
   }),
+  computed: {
+    disabled: vm => vm.value === ''
+  },
   components: {
     RadioButtons,
     SearchInput,

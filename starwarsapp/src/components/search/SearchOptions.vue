@@ -20,11 +20,12 @@ export default {
   name: 'search-options',
   data: () => ({
     picked: MOVIES,
-    value: '',
-    buttonText: 'Search'
+    value: ''
+    // buttonText: 'Search'
   }),
   computed: {
-    disabled: vm => vm.value === ''
+    disabled: vm => vm.value === '',
+    buttonText: vm => vm.value.length >= 2 ? 'Searching...' : 'Search'
   },
   components: {
     RadioButtons,

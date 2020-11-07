@@ -35,6 +35,7 @@ export default {
   background-color: var(--color-white);
 
   &-label {
+    color: var(--color-grey-dark);
     font-size: var(--font-size-s);
   }
 

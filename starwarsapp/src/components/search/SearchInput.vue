@@ -40,6 +40,7 @@ export default {
   background-color: var(--color-white);
   box-shadow: inset 0 0.0625rem 0.1875rem 0 var(--color-grey-dimm-75);
   font-family: var(--font-family);
+  font-size: var(--font-size-s);
 
   &:focus {
     outline: none;

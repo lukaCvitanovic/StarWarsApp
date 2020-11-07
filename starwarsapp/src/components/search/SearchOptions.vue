@@ -5,23 +5,26 @@
     </span>
     <radio-buttons v-model="picked" />
     <search-input v-model="value" :search-type="picked"/>
-    <span>{{ value }}</span>
+    <base-button class="search-button mt-l" :text="buttonText" />
   </div>
 </template>
 
 <script>
 import RadioButtons from './RadionButtons'
 import SearchInput from './SearchInput'
+import BaseButton from '../common/BaseButton'
 
 export default {
   name: 'search-options',
   data: () => ({
     picked: 'Movies',
-    value: 'asga'
+    value: 'asga',
+    buttonText: 'Search'
   }),
   components: {
     RadioButtons,
-    SearchInput
+    SearchInput,
+    BaseButton
   }
 }
 </script>
@@ -33,6 +36,10 @@ export default {
 
   &-label {
     font-size: var(--font-size-s);
+  }
+
+  .search-button{
+    width: 100%;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div id="app">
     <app-header />
     <div class="content flex-h align-center my-xl">
-      <search-options />
+      <search-options class="pa-xl"/>
     </div>
   </div>
 </template>

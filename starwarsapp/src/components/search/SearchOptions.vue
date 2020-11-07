@@ -1,10 +1,10 @@
 <template>
-  <div class="search-options flex-v pa-xl justify-center align-start box-shadow">
+  <div class="search-options flex-v justify-center align-start box-shadow">
     <span class="search-options-label">
       What are you searching for?
     </span>
-    <radio-buttons v-model="picked" />
-    <search-input v-model="value" :search-type="picked"/>
+    <radio-buttons class="mt-l" v-model="picked" />
+    <search-input class="mt-l px-m" v-model="value" :search-type="picked"/>
     <base-button class="search-button mt-l" :text="buttonText" />
   </div>
 </template>

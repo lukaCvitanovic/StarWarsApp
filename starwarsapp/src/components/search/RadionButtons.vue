@@ -1,5 +1,5 @@
 <template>
-  <div class="radio-buttons flex-h mt-l">
+  <div class="radio-buttons flex-h">
     <div class="radio-button flex-h align-center">
       <input
         id="people"

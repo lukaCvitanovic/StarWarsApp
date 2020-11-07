@@ -1,6 +1,6 @@
 <template>
   <input
-    class="search-input mt-l px-m"
+    class="search-input"
     @input="$emit('input', $event.target.value)"
     :placeholder="plh"
     :value="value" >

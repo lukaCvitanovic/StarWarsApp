@@ -1,5 +1,5 @@
 <template>
-  <div class="search-options flex-v justify-center align-start box-shadow">
+  <div class="search-options flex-v justify-center align-start box-shadow pa-xl">
     <span class="search-options-label">
       What are you searching for?
     </span>

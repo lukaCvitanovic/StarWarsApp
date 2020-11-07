@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <app-header />
-    <div class="content flex-h align-center my-xl">
-      <search-options class="pa-xl"/>
+    <div class="content flex-h align-start justify-center my-xl">
+      <search-options class="mr-xl" />
+      <search-results :results="resutls" />
     </div>
   </div>
 </template>
@@ -10,12 +11,17 @@
 <script>
 import AppHeader from './components/AppHeader'
 import SearchOptions from './components/search/SearchOptions'
+import SearchResults from './components/search/SearchResults'
 
 export default {
   name: 'app',
+  data: () => ({
+    resutls: []
+  }),
   components: {
     AppHeader,
-    SearchOptions
+    SearchOptions,
+    SearchResults
   }
 }
 </script>

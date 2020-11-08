@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="home">
     <app-header />
     <div class="content flex-h align-start justify-center my-xl">
       <search-options class="mr-xl" @search="search" :button-text="searchButtonText" />
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
+#home {
   width: 100%;
   height: 100%;
   text-align: center;

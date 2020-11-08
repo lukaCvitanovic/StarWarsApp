@@ -1,7 +1,10 @@
 <template>
   <div class="search-result flex-h align-center justify-space-between mt-m">
     <span class="search-result-name">{{ name }}</span>
-    <base-button class="go-to-details px-m" text="Details"/>
+    <base-button
+     class="go-to-details px-m"
+     text="Details"
+     @click="onClick" />
   </div>
 </template>
 
@@ -20,12 +23,17 @@ export default {
       required: true
     }
   },
+  methods: {
+    onClick () {
+      this.$router.push({ path: `details/${this.url}` })
+    }
+  },
   computed: {
     url () {
       const place = this.link.search('people')
       return place !== -1
-        ? this.link.slice('people'.length + 1, this.link.length)
-        : this.link.slice('moveis'.length + 1, this.link.length)
+        ? this.link.slice(place, this.link.length)
+        : this.link.slice(place, this.link.length)
     }
   },
   components: {

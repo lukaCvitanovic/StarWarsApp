@@ -14,10 +14,10 @@
       </div>
       <div class="results" v-if="!hasResults">
         <search-result
-          v-for="result in results"
-          :key="result.name"
-          :name="result.name"
-          :link="result.url" />
+          v-for="{ name, url } in results"
+          :key="name"
+          :name="name"
+          :link="url" />
       </div>
     </div>
   </div>

@@ -1,14 +1,24 @@
 import client from './client'
 
-function getPerson (name) {
+function getPersonByName (name) {
   return client.get('/people', { params: { search: name } })
 }
 
-function getMovies (name) {
+function getPersonById (id) {
+  return client.get(`/people/${id}`)
+}
+
+function getMoviesByName (name) {
   return client.get('/movies', { params: { search: name } })
 }
 
+function getMoviesById (id) {
+  return client.get(`/movies/${id}`)
+}
+
 export default {
-  getPerson,
-  getMovies
+  getPersonByName,
+  getPersonById,
+  getMoviesByName,
+  getMoviesById
 }

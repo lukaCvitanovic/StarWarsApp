@@ -12,11 +12,20 @@
           Use the form to search for People of Movies.
         </span>
       </div>
+      <div class="results" v-if="!hasResults">
+        <search-result
+          v-for="result in results"
+          :key="result.name"
+          :name="result.name"
+          :link="result.url" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import SearchResult from './SearchResult'
+
 export default {
   name: 'search-results',
   props: {
@@ -27,6 +36,9 @@ export default {
   },
   computed: {
     hasResults: vm => !vm.results.length
+  },
+  components: {
+    SearchResult
   }
 }
 </script>
@@ -49,6 +61,11 @@ export default {
       span {
         color: var(--color-grey);
       }
+    }
+
+    .results {
+      width: 100%;
+      height: 100%;
     }
   }
 

@@ -5,7 +5,11 @@
     </span>
     <radio-buttons class="mt-l" v-model="picked" />
     <search-input class="mt-l px-m" v-model="value" :search-type="picked"/>
-    <base-button class="search-button mt-l" :text="buttonText" :disabled="disabled" />
+    <base-button
+      class="search-button mt-l"
+      :text="buttonText"
+      :disabled="disabled"
+      @click="$emit('search', { picked, value })" />
   </div>
 </template>
 
@@ -21,11 +25,15 @@ export default {
   data: () => ({
     picked: MOVIES,
     value: ''
-    // buttonText: 'Search'
   }),
+  props: {
+    buttonText: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
-    disabled: vm => vm.value === '',
-    buttonText: vm => vm.value.length >= 2 ? 'Searching...' : 'Search'
+    disabled: vm => !vm.value.length
   },
   components: {
     RadioButtons,

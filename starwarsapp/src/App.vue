@@ -1,17 +1,12 @@
 <template>
   <div id="app">
-    <app-header />
+    <router-view />
   </div>
 </template>
 
 <script>
-import AppHeader from './components/AppHeader'
-
 export default {
-  name: 'app',
-  components: {
-    AppHeader
-  }
+  name: 'App'
 }
 </script>
 
@@ -21,8 +16,5 @@ export default {
 #app {
   width: 100%;
   height: 100%;
-  font-family: Montserrat;
-  text-align: center;
-  background-color: var(--color-grey-light);
 }
 </style>

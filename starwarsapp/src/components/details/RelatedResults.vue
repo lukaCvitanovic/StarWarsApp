@@ -1,12 +1,15 @@
 <template>
   <div class="related-results flex-v align-start">
     <span class="related-results-description mb-l">Related items:</span>
-    <div class="related-results-box flex-h flex-wrap">
+    <div v-if="relevant" class="related-results-box flex-h flex-wrap">
       <related-result
         v-for="[name, url] in relevant"
         :key="url"
         :title="name"
         :link="url" />
+    </div>
+    <div class="loading flex-v justify-center" v-else>
+      <span>Loading...</span>
     </div>
   </div>
 </template>
@@ -19,7 +22,7 @@ export default {
   props: {
     relevant: {
       type: Array,
-      required: true
+      default: null
     }
   },
   components: {
@@ -29,8 +32,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.related-results-box {
+.related-results {
   width: 15rem;
-  text-align: justify;
+
+  &-box {
+    text-align: justify;
+  }
+
+  .loading {
+    width: 100%;
+    height: 10.625rem;
+  }
 }
 </style>

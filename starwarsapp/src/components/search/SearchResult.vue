@@ -41,11 +41,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.search-result {
-  &-name {
-    font-size: var(--font-size-l);
-  }
-}
-</style>

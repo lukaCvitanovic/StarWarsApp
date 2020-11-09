@@ -9,11 +9,11 @@ function getPeopleById (id) {
 }
 
 function getMoviesByName (name) {
-  return client.get('/movies', { params: { search: name } })
+  return client.get('/films', { params: { search: name } })
 }
 
 function getMoviesById (id) {
-  return client.get(`/movies/${id}`)
+  return client.get(`/films/${id}`)
 }
 
 function get (path) {

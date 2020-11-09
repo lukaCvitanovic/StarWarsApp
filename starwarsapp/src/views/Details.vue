@@ -3,7 +3,6 @@
     <app-header />
     <div class="content flex-h align-center justify-center my-xl">
       <details-panel
-        v-if="relevant"
         :name="name"
         :relevant="relevant"
         :item-details="itemDetails" />
@@ -31,6 +30,8 @@ export default {
       const { data } = type.toUpperCase() === PEOPLE
         ? await api.getPeopleById(id)
         : await api.getMoviesById(id)
+      if (this.relevant !== null) this.relevant = null
+      if (this.itemDetails !== null) this.itemDetails = null
       const array = Object.keys(data).map(key => ([key, data[key]])).splice(0, 13)
       const [name, ...rest] = array.slice(0, 8)
       this.name = name[1]

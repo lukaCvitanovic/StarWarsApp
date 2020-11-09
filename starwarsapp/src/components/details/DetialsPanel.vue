@@ -3,9 +3,9 @@
     <span class="name">{{ name }}</span>
     <div class="details-panel-content flex-h align-start justify-space-between">
       <result-details class="mt-xl" v-if="itemDetails" :details="itemDetails"/>
-      <related-results v-if="relevant" class="mt-xl" :relevant="relevant" />
+      <related-results class="mt-xl" :relevant="relevant" />
     </div>
-    <base-button class="px-m mt-m" :text="text" @click="$router.push({ name: 'Home' })" />
+    <base-button class="px-m mt-m" text="Go Back" @click="$router.push({ name: 'Home' })" />
   </div>
 </template>
 
@@ -16,10 +16,6 @@ import BaseButton from '../common/BaseButton'
 
 export default {
   name: 'DetailsPanel',
-  data: () => ({
-    name: '',
-    text: 'Go Back'
-  }),
   props: {
     name: {
       type: String,

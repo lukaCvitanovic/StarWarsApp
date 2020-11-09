@@ -19,6 +19,8 @@ import shuffle from 'lodash.shuffle'
 import searchOptions from '@/config/searchOptions.js'
 const { PEOPLE } = searchOptions
 
+const RELEVANT_CHARACTERS_LIMIT = 15
+
 export default {
   name: 'Details',
   data: () => ({
@@ -35,18 +37,13 @@ export default {
     },
     isUrl (string) {
       if (typeof string === 'string') {
-        try {
-          URL(string)
-          return true
-        } catch {
-          return false
-        }
+        return string.search('http') !== -1
       } else return false
     },
     findReleventLimit (array) {
       let i = 0
       for (const [, value] of array) {
-        if (typeof value === 'object' || this.isUrl()) return i
+        if (typeof value === 'object' || this.isUrl(value)) return i
         i++
       }
       return array.length - 1
@@ -57,15 +54,17 @@ export default {
         : await api.getMoviesById(id)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
-      const array = Object.keys(data).map(key => ([key, data[key]])).splice(0, 13)
-      const [name, ...rest] = array.slice(0, 8)
-      this.name = name[1]
+      let array = Object.keys(data).map(key => ([key, data[key]]))
+      array = array.slice(0, array.length - 3)
+      const limit = this.findReleventLimit(array)
+      const [[, name], ...rest] = array.slice(0, limit)
+      this.name = name
       this.itemDetails = rest
-      let relevant = array.slice(8)
+      let relevant = array.slice(limit)
       relevant = await this.formatRelevant(relevant)
       let relevantOnceRemoved = await this.getRelevantForPeople(relevant)
       relevantOnceRemoved = shuffle(relevantOnceRemoved)
-      this.relevant = relevantOnceRemoved.slice(0, 15)
+      this.relevant = relevantOnceRemoved.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
@@ -84,7 +83,7 @@ export default {
       let relevant = array.slice(limit)
       relevant = await this.formatRelevant(relevant)
       relevant = shuffle(relevant)
-      this.relevant = relevant.slice(0, 15)
+      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
     generatePath (url) {
       return url.slice(url.search('/api') + '/api'.length)

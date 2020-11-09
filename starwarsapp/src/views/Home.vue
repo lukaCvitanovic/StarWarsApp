@@ -25,7 +25,9 @@ export default {
   methods: {
     async search ({ picked: type, value: name }) {
       this.searchButtonText = 'Searching...'
-      const { data: { results } } = type === PEOPLE ? await api.getPerson(name) : await api.getMovies(name)
+      const { data: { results } } = type === PEOPLE
+        ? await api.getPeopleByName(name)
+        : await api.getMoviesByName(name)
       this.results = results
       this.searchButtonText = 'Search'
     }

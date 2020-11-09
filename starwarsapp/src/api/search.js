@@ -16,9 +16,14 @@ function getMoviesById (id) {
   return client.get(`/movies/${id}`)
 }
 
+function get (path) {
+  return client.get(path)
+}
+
 export default {
   getPeopleByName,
   getPeopleById,
   getMoviesByName,
-  getMoviesById
+  getMoviesById,
+  get
 }

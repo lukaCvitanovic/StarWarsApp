@@ -4,6 +4,7 @@
     <div class="content flex-h align-center justify-center my-xl">
       <details-panel
         :name="name"
+        :openingCrawl="openingCrawl"
         :relevant="relevant"
         :item-details="itemDetails" />
     </div>
@@ -22,11 +23,35 @@ export default {
   name: 'Details',
   data: () => ({
     name: '',
+    openingCrawl: '',
     relevant: null,
     itemDetails: null
   }),
   methods: {
     async getDetails ({ type, id }) {
+      type === 'films'
+        ? await this.getDetailsFilms({ type, id })
+        : await this.getDetailsOthers({ type, id })
+    },
+    isUrl (string) {
+      if (typeof string === 'string') {
+        try {
+          URL(string)
+          return true
+        } catch {
+          return false
+        }
+      } else return false
+    },
+    findReleventLimit (array) {
+      let i = 0
+      for (const [, value] of array) {
+        if (typeof value === 'object' || this.isUrl()) return i
+        i++
+      }
+      return array.length - 1
+    },
+    async getDetailsOthers ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
         ? await api.getPeopleById(id)
         : await api.getMoviesById(id)
@@ -41,6 +66,25 @@ export default {
       let relevantOnceRemoved = await this.getRelevantForPeople(relevant)
       relevantOnceRemoved = shuffle(relevantOnceRemoved)
       this.relevant = relevantOnceRemoved.slice(0, 15)
+    },
+    async getDetailsFilms ({ type, id }) {
+      const { data } = type.toUpperCase() === PEOPLE
+        ? await api.getPeopleById(id)
+        : await api.getMoviesById(id)
+      if (this.relevant !== null) this.relevant = null
+      if (this.itemDetails !== null) this.itemDetails = null
+      this.openingCrawl = data.opening_crawl
+      this.$delete(data, 'opening_crawl')
+      let array = Object.keys(data).map(key => ([key, data[key]]))
+      array = array.slice(0, array.length - 3)
+      const limit = this.findReleventLimit(array)
+      const [[, name], ...rest] = array.slice(0, limit)
+      this.name = name
+      this.itemDetails = rest
+      let relevant = array.slice(limit)
+      relevant = await this.formatRelevant(relevant)
+      relevant = shuffle(relevant)
+      this.relevant = relevant.slice(0, 15)
     },
     generatePath (url) {
       return url.slice(url.search('/api') + '/api'.length)

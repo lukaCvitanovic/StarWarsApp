@@ -3,7 +3,7 @@
     <app-header />
     <div class="content flex-h align-start justify-center my-xl">
       <search-options class="mr-xl" @search="search" :button-text="searchButtonText" />
-      <search-results :results="results" />
+      <search-results :results="results" :isFilm="isFilm" />
     </div>
   </div>
 </template>
@@ -20,15 +20,21 @@ export default {
   name: 'Home',
   data: () => ({
     results: [],
+    isFilm: false,
     searchButtonText: 'Search'
   }),
   methods: {
     async search ({ picked: type, value: name }) {
       this.searchButtonText = 'Searching...'
-      const { data: { results } } = type === PEOPLE
-        ? await api.getPeopleByName(name)
-        : await api.getMoviesByName(name)
-      this.results = results
+      if (type === PEOPLE) {
+        const { data: { results } } = await api.getPeopleByName(name)
+        this.isFilm = false
+        this.results = results
+      } else {
+        const { data: { results } } = await api.getMoviesByName(name)
+        this.isFilm = true
+        this.results = results
+      }
       this.searchButtonText = 'Search'
     }
   },

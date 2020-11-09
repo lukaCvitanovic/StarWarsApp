@@ -33,7 +33,7 @@ export default {
       const place = this.link.search('people')
       return place !== -1
         ? this.link.slice(place, this.link.length)
-        : this.link.slice(place, this.link.length)
+        : this.link.slice(this.link.search('films'), this.link.length)
     }
   },
   components: {

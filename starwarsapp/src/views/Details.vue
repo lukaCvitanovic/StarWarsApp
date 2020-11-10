@@ -30,10 +30,15 @@ export default {
     itemDetails: null
   }),
   methods: {
-    async getDetails ({ type, id }) {
+    async getDetails ({ params, fullPath }) {
+      console.log(fullPath)
+      const { type, id } = params
       type === 'films'
         ? await this.getDetailsFilms({ type, id })
-        : await this.getDetailsOthers({ type, id })
+        : await this.getDetailsOthers(this.removeDetailsFromUrl(fullPath, type), type)
+    },
+    removeDetailsFromUrl (url, type) {
+      return url.slice(url.search(type))
     },
     isUrl (string) {
       if (typeof string === 'string') {
@@ -48,23 +53,75 @@ export default {
       }
       return array.length - 1
     },
-    async getDetailsOthers ({ type, id }) {
-      const { data } = type.toUpperCase() === PEOPLE
-        ? await api.getPeopleById(id)
-        : await api.getMoviesById(id)
+    generatePath (url) {
+      return url.slice(url.search('/api') + '/api'.length)
+    },
+    isFilm (url) {
+      return url.search('films') !== -1
+    },
+    isFilmOrPlanet (url) {
+      return this.isFilm(url) || url.search('planets') !== -1
+    },
+    arrayToUrls (object) {
+      const urls = []
+      for (const item of object) {
+        const [, value] = item
+        if (typeof item === 'string') urls.push(item)
+        else {
+          if (typeof value === 'string') urls.push(value)
+          else {
+            for (const insance of value) urls.push(insance)
+          }
+        }
+      }
+      return urls
+    },
+    onlyArrays (array) {
+      return array.reduce((acc, [, element]) => {
+        if (typeof element === 'object') acc.push(element)
+        return acc
+      }, [])
+    },
+    onlyArraysAndRest (array) {
+      const [onlyArray, rest] = array.reduce((acc, curent) => {
+        const [onlyArray, rest] = acc
+        const [, element] = curent
+        typeof element === 'object' || this.isUrl(element)
+          ? onlyArray.push(element)
+          : rest.push(curent)
+        return acc
+      }, [[], []])
+      return [this.singleDepthArray(onlyArray), rest]
+    },
+    singleDepthArray (array) {
+      return array.reduce((acc, curent) => {
+        return acc.concat(curent)
+      }, [])
+    },
+    async formatRelevant (relevant) {
+      const urls = this.arrayToUrls(relevant)
+      return await Promise.all(urls.map(async url => {
+        const key = url.search('films') !== -1
+          ? 'title'
+          : 'name'
+        const { data } = await api.get(this.generatePath(url))
+        return [data[key], this.generatePath(url)]
+      }))
+    },
+    async getDetailsOthers (path, type) {
+      const { data } = await api.get(path)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       let array = Object.keys(data).map(key => ([key, data[key]]))
       array = array.slice(0, array.length - 3)
-      const limit = this.findReleventLimit(array)
-      const [[, name], ...rest] = array.slice(0, limit)
+      let [tempRelevant, [[, name], ...rest]] = this.onlyArraysAndRest(array)
       this.name = name
       this.itemDetails = rest
-      let relevant = array.slice(limit)
-      relevant = await this.formatRelevant(relevant)
-      let relevantOnceRemoved = await this.getRelevantForPeople(relevant)
-      relevantOnceRemoved = shuffle(relevantOnceRemoved)
-      this.relevant = relevantOnceRemoved.slice(0, RELEVANT_CHARACTERS_LIMIT)
+      tempRelevant = await this.formatRelevant(tempRelevant)
+      console.log(tempRelevant)
+      let relevant = await this.getRelevantForPeople(tempRelevant)
+      relevant = shuffle(relevant)
+      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
@@ -85,63 +142,44 @@ export default {
       relevant = shuffle(relevant)
       this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
-    generatePath (url) {
-      return url.slice(url.search('/api') + '/api'.length)
-    },
-    isFilmOrPlanet (url) {
-      return url.search('films') !== -1 || url.search('planets') !== -1
-    },
-    async formatRelevant (relevant) {
-      const urls = []
-      for (const [, value] of relevant) {
-        if (typeof value === 'string') urls.push(value)
+    async getRelevantForPeople (relevant) {
+      let dontGetRelevant = []
+      let frstDegCahrs = []
+      for (const item of relevant) {
+        const [, url] = item
+        let { data } = await api.get(url)
+        data = this.onlyArrays(Object.entries(data))
+        if (!data.length) dontGetRelevant.push(item)
         else {
-          for (const insance of value) urls.push(insance)
+          frstDegCahrs = frstDegCahrs.concat(data)
         }
       }
-      return await Promise.all(urls.map(async url => {
-        const key = url.search('films') !== -1
-          ? 'title'
-          : 'name'
-        const { data } = await api.get(this.generatePath(url))
-        return [data[key], this.generatePath(url)]
-      }))
-    },
-    async getRelevantForPeople (relevant) {
-      const [homeworld, ...rest] = relevant
-      const dontGetRelevant = []
-      const { data: { residents } } = await api.get(homeworld[1])
-      const charUrls = residents.slice(0, 4)
-      for (const [name, url] of rest) {
-        if (this.isFilmOrPlanet(url)) {
-          const { data: { characters } } = await api.get(url)
-          let i = 0
-          for (const character of characters) {
-            if (!charUrls.includes(character) && i < 4) {
-              charUrls.push(character)
-              i++
-            }
-          }
-        } else dontGetRelevant.push([name, url])
-      }
-      const chars = await Promise.all(charUrls.map(async charUrl => {
-        const { data: { name } } = await api.get(charUrl)
-        return [name, this.generatePath(charUrl)]
+      dontGetRelevant = dontGetRelevant.concat(relevant)
+      frstDegCahrs = this.singleDepthArray(frstDegCahrs).slice(0, RELEVANT_CHARACTERS_LIMIT)
+      const chars = await Promise.all(frstDegCahrs.map(async url => {
+        let name
+        if (!this.isFilm(url)) {
+          const { data } = await api.get(url)
+          name = data.name
+        } else {
+          const { data: { title } } = await api.get(url)
+          name = title
+        }
+        return [name, this.generatePath(url)]
       }))
       return chars.concat(dontGetRelevant)
     }
   },
   watch: {
     $route: {
-      async handler ({ params }) {
-        await this.getDetails(params)
+      async handler (route) {
+        await this.getDetails(route)
         this.$forceUpdate()
       }
     }
   },
   async created () {
-    console.log('created')
-    await this.getDetails(this.$route.params)
+    await this.getDetails(this.$route)
   },
   components: {
     AppHeader,

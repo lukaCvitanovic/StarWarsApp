@@ -55,7 +55,6 @@ export default {
 
 <style lang="scss" scoped>
 .search-results {
-  width: var(--measure-m);
   height: var(--measure-m);
   background-color: var(--color-white);
 

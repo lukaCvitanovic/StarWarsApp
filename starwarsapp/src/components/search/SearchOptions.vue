@@ -45,7 +45,6 @@ export default {
 
 <style lang="scss" scoped>
 .search-options {
-  width: var(--measure-s);
   background-color: var(--color-white);
 
   &-label {

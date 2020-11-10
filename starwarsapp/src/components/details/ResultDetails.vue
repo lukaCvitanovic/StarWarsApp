@@ -31,6 +31,11 @@ export default {
 
 <style lang="scss" scoped>
 .result-details {
-  max-width: 50%;
+  width: 100%;
+}
+@media (min-width: 43.75rem) {
+  .result-details {
+    max-width: 50%;
+  }
 }
 </style>

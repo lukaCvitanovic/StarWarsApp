@@ -33,7 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 .related-results {
-  width: 15rem;
+  width: 100%;
 
   &-box {
     text-align: justify;
@@ -46,6 +46,11 @@ export default {
     span {
       color: var(--color-grey-dimm);
     }
+  }
+}
+@media (min-width: 43.75rem) {
+  .related-results {
+    width: 15rem;
   }
 }
 </style>

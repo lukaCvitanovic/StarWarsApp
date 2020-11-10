@@ -1,15 +1,15 @@
 <template>
   <div class="details-panel flex-v align-start justify-space-between box-shadow pa-xl">
     <span class="name">{{ name }}</span>
-    <div v-if="notFilm" class="details-panel-content flex-h align-start justify-space-between">
-      <result-details class="mt-xl" v-if="itemDetails" :details="itemDetails"/>
-      <related-results class="mt-xl" :relevant="relevant" />
+    <div v-if="notFilm" class="details-panel-content justify-space-between">
+      <result-details class="content-data" v-if="itemDetails" :details="itemDetails"/>
+      <related-results class="content-data" :relevant="relevant" />
     </div>
     <div v-else class="details-film-panel flex-v algin-center">
       <span v-if="openingCrawl" class="opening-crawl mt-l">{{ openingCrawl }}</span>
-      <div class="details-film-panel-content flex-h align-start justify-space-between">
-        <result-details class="mt-xl" v-if="itemDetails" :details="itemDetails"/>
-        <related-results class="mt-xl" :relevant="relevant" />
+      <div class="details-film-panel-content justify-space-between">
+        <result-details class="content-data" v-if="itemDetails" :details="itemDetails"/>
+        <related-results class="content-data content-data-results" :relevant="relevant" />
       </div>
     </div>
     <base-button class="px-m mt-m" text="Go Back" @click="$router.push({ name: 'Home' })" />
@@ -54,14 +54,35 @@ export default {
 
 <style lang="scss" scoped>
 .details-panel {
-  width: var(--measure-l);
   background-color: var(--color-white);
+  min-width: var(--min-width);
 
   &-content {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .content-data {
+      margin-top: var(--spc-xl);
+    }
   }
 
   .details-film-panel {
+    &-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .content-data {
+      margin-top: var(--spc-xl);
+
+      &-results {
+        margin-bottom: var(--spc-l);
+      }
+    }
+
     .opening-crawl {
       color: var(--color-grey-dimm);
       text-align: initial;
@@ -70,6 +91,15 @@ export default {
 
   .name {
     font-size: var(--font-size-l)
+  }
+}
+@media (min-width: 43.75rem) {
+  .details-panel {
+    .details-panel-content,
+    .details-film-panel .details-film-panel-content {
+      flex-direction: row;
+      align-items: flex-start;
+    }
   }
 }
 </style>

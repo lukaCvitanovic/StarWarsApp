@@ -3,6 +3,7 @@
     <app-header />
     <div class="content flex-h align-center justify-center my-xl">
       <details-panel
+        class="details-panel"
         :name="name"
         :openingCrawl="openingCrawl"
         :relevant="relevant"
@@ -214,6 +215,17 @@ export default {
 
   .content {
     width: 100%;
+    padding-left: var(--spc-xl);
+    padding-right: var(--spc-xl);
+
+    .details-panel {
+      width: 100%;
+    }
+  }
+}
+@media (min-width: 54rem) {
+  .details .content .details-panel {
+    width: var(--measure-l);
   }
 }
 </style>

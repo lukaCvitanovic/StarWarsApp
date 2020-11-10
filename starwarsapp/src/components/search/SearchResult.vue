@@ -41,3 +41,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.search-result {
+  text-align: left;
+}
+</style>

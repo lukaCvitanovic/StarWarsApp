@@ -15,6 +15,10 @@ export default {
 
 #app {
   width: 100%;
-  height: 100%;
+}
+@media (min-width: 40.125rem) {
+  #app {
+    height: 100%;
+  }
 }
 </style>

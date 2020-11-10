@@ -1,7 +1,10 @@
 <template>
   <div class="related-results flex-v align-start">
     <span class="related-results-description mb-l">Related items:</span>
-    <div v-if="relevant" class="related-results-box flex-h flex-wrap">
+    <div class="error flex-v justify-center" v-if="errorMsg">
+      <span>{{ errorMsg }}</span>
+    </div>
+    <div v-else-if="relevant" class="related-results-box flex-h flex-wrap">
       <related-result
         v-for="[name, url] in relevant"
         :key="url"
@@ -23,7 +26,14 @@ export default {
     relevant: {
       type: Array,
       default: null
+    },
+    errorMsg: {
+      type: String,
+      default: ''
     }
+  },
+  created () {
+    console.log(this.errorMsg)
   },
   components: {
     RelatedResult
@@ -45,6 +55,15 @@ export default {
 
     span {
       color: var(--color-grey-dimm);
+    }
+  }
+
+  .error {
+    width: 100%;
+    margin: 55% 0;
+
+    span {
+      color: red;
     }
   }
 }

@@ -3,7 +3,10 @@
     <span class="search-results-label">Results</span>
     <hr class="mt-m"/>
     <div class="search-results-field flex-v align-center justify-center">
-      <div v-if="!results.length" class="no-results">
+      <div v-if="errorMsg" class="error">
+        <span>{{ errorMsg }}</span>
+      </div>
+      <div v-else-if="!results.length" class="no-results">
         <span>
           There are zero matches.
         </span>
@@ -45,6 +48,10 @@ export default {
     isFilm: {
       type: Boolean,
       default: false
+    },
+    errorMsg: {
+      type: String,
+      default: ''
     }
   },
   components: {
@@ -70,6 +77,10 @@ export default {
       span {
         color: var(--color-grey);
       }
+    }
+
+    .error span {
+      color: red;
     }
 
     .results-wrapper {

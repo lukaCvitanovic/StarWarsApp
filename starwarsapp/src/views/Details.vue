@@ -4,6 +4,7 @@
     <div class="content flex-h align-center justify-center my-xl">
       <details-panel
         class="details-panel"
+        :error-msg="errorMsg"
         :name="name"
         :openingCrawl="openingCrawl"
         :relevant="relevant"
@@ -28,6 +29,7 @@ export default {
   data: () => ({
     name: '',
     openingCrawl: '',
+    errorMsg: '',
     relevant: null,
     itemDetails: null
   }),
@@ -37,6 +39,36 @@ export default {
       type === 'films'
         ? await this.getDetailsFilms({ type, id })
         : await this.getDetailsOthers(this.removeDetailsFromUrl(fullPath, type), type)
+    },
+    apiCall (url) {
+      return new Promise((resolve, reject) => {
+        api.get(url)
+          .then(data => resolve(data))
+          .catch(error => {
+            this.errorMsg = error
+            reject(error)
+          })
+      })
+    },
+    apiCallPeople (id) {
+      return new Promise((resolve, reject) => {
+        api.getPeopleById(id)
+          .then(data => resolve(data))
+          .catch(error => {
+            this.errorMsg = error
+            reject(error)
+          })
+      })
+    },
+    apiCallMovies (id) {
+      return new Promise((resolve, reject) => {
+        api.getMoviesById(id)
+          .then(data => resolve(data))
+          .catch(error => {
+            this.errorMsg = error
+            reject(error)
+          })
+      })
     },
     removeDetailsFromUrl (url, type) {
       return url.slice(url.search(type))
@@ -103,14 +135,13 @@ export default {
       }, [])
     },
     checkForTheSame (checkArray, array) {
-      const a = array.reduce((acc, curent) => {
+      return array.reduce((acc, curent) => {
         if (checkArray.includes(curent)) return acc
         else {
           acc.push(curent)
           return acc
         }
       }, [])
-      return a
     },
     isTheSameUrl (url) {
       return this.generatePath(url) === this.removeDetailsFromUrl(this.$route.fullPath)
@@ -121,12 +152,12 @@ export default {
         const key = url.search('films') !== -1
           ? 'title'
           : 'name'
-        const { data } = await api.get(this.generatePath(url))
+        const { data } = await this.apiCall(this.generatePath(url))
         return [data[key], this.generatePath(url)]
       }))
     },
     async getDetailsOthers (path, type) {
-      const { data } = await api.get(path)
+      const { data } = await this.apiCall(path)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       let array = Object.keys(data).map(key => ([key, data[key]]))
@@ -141,8 +172,8 @@ export default {
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
-        ? await api.getPeopleById(id)
-        : await api.getMoviesById(id)
+        ? await this.apiCallPeople(id)
+        : await this.apiCallMovies(id)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       this.openingCrawl = data.opening_crawl
@@ -164,7 +195,7 @@ export default {
       for (const item of relevant) {
         const [, url] = item
         if (!this.isTheSameUrl(url)) {
-          let { data } = await api.get(url)
+          let { data } = await this.apiCall(url)
           data = this.singleDepthArray(this.onlyArrays(Object.entries(data)))
           if (!data.length) dontGetRelevant.push(item)
           else {
@@ -180,10 +211,10 @@ export default {
       const chars = await Promise.all(frstDegCahrs.map(async url => {
         let name
         if (!this.isFilm(url)) {
-          const { data } = await api.get(url)
+          const { data } = await this.apiCall(url)
           name = data.name
         } else {
-          const { data: { title } } = await api.get(url)
+          const { data: { title } } = await this.apiCall(url)
           name = title
         }
         return [name, this.generatePath(url)]

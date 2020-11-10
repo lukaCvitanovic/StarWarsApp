@@ -2,14 +2,26 @@
   <div class="details-panel flex-v align-start justify-space-between box-shadow pa-xl">
     <span class="name">{{ name }}</span>
     <div v-if="notFilm" class="details-panel-content justify-space-between">
-      <result-details class="content-data" v-if="itemDetails" :details="itemDetails"/>
-      <related-results class="content-data" :relevant="relevant" />
+      <result-details
+        class="content-data"
+        v-if="itemDetails"
+        :details="itemDetails" />
+      <related-results
+        class="content-data"
+        :relevant="relevant"
+        :errorMsg="errorMsg" />
     </div>
     <div v-else class="details-film-panel flex-v algin-center">
       <span v-if="openingCrawl" class="opening-crawl mt-l">{{ openingCrawl }}</span>
       <div class="details-film-panel-content justify-space-between">
-        <result-details class="content-data" v-if="itemDetails" :details="itemDetails"/>
-        <related-results class="content-data content-data-results" :relevant="relevant" />
+        <result-details
+          class="content-data"
+          v-if="itemDetails"
+          :details="itemDetails" />
+        <related-results
+          class="content-data content-data-results"
+          :relevant="relevant"
+          :errorMsg="errorMsg" />
       </div>
     </div>
     <base-button class="px-m mt-m" text="Go Back" @click="$router.push({ name: 'Home' })" />
@@ -27,6 +39,10 @@ export default {
     name: {
       type: String,
       required: true
+    },
+    errorMsg: {
+      type: String,
+      default: ''
     },
     openingCrawl: {
       type: String,

@@ -53,6 +53,7 @@ export default {
   min-width: var(--min-width);
   text-align: center;
   background-color: var(--color-grey-light);
+  overflow-y: auto;
 
   .content {
     width: 100%;

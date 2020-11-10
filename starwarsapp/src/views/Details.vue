@@ -20,6 +20,7 @@ import searchOptions from '@/config/searchOptions.js'
 const { PEOPLE } = searchOptions
 
 const RELEVANT_CHARACTERS_LIMIT = 15
+const DATA_SIZE_LIMIT = 20
 
 export default {
   name: 'Details',
@@ -31,7 +32,6 @@ export default {
   }),
   methods: {
     async getDetails ({ params, fullPath }) {
-      console.log(fullPath)
       const { type, id } = params
       type === 'films'
         ? await this.getDetailsFilms({ type, id })
@@ -98,6 +98,19 @@ export default {
         return acc.concat(curent)
       }, [])
     },
+    checkForTheSame (checkArray, array) {
+      const a = array.reduce((acc, curent) => {
+        if (checkArray.includes(curent)) return acc
+        else {
+          acc.push(curent)
+          return acc
+        }
+      }, [])
+      return a
+    },
+    isTheSameUrl (url) {
+      return this.generatePath(url) === this.removeDetailsFromUrl(this.$route.fullPath)
+    },
     async formatRelevant (relevant) {
       const urls = this.arrayToUrls(relevant)
       return await Promise.all(urls.map(async url => {
@@ -118,8 +131,7 @@ export default {
       this.name = name
       this.itemDetails = rest
       tempRelevant = await this.formatRelevant(tempRelevant)
-      console.log(tempRelevant)
-      let relevant = await this.getRelevantForPeople(tempRelevant)
+      let relevant = await this.getRelevantForOthers(tempRelevant)
       relevant = shuffle(relevant)
       this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
@@ -142,20 +154,25 @@ export default {
       relevant = shuffle(relevant)
       this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
     },
-    async getRelevantForPeople (relevant) {
+    async getRelevantForOthers (relevant) {
       let dontGetRelevant = []
       let frstDegCahrs = []
       for (const item of relevant) {
         const [, url] = item
-        let { data } = await api.get(url)
-        data = this.onlyArrays(Object.entries(data))
-        if (!data.length) dontGetRelevant.push(item)
-        else {
-          frstDegCahrs = frstDegCahrs.concat(data)
+        if (!this.isTheSameUrl(url)) {
+          let { data } = await api.get(url)
+          data = this.singleDepthArray(this.onlyArrays(Object.entries(data)))
+          if (!data.length) dontGetRelevant.push(item)
+          else {
+            if (data.length > DATA_SIZE_LIMIT) {
+              data = shuffle(data).slice(0, DATA_SIZE_LIMIT)
+            }
+            frstDegCahrs = this.checkForTheSame(frstDegCahrs, data)
+          }
         }
       }
-      dontGetRelevant = dontGetRelevant.concat(relevant)
-      frstDegCahrs = this.singleDepthArray(frstDegCahrs).slice(0, RELEVANT_CHARACTERS_LIMIT)
+      dontGetRelevant = this.checkForTheSame(dontGetRelevant, relevant)
+      frstDegCahrs = frstDegCahrs.slice(0, RELEVANT_CHARACTERS_LIMIT)
       const chars = await Promise.all(frstDegCahrs.map(async url => {
         let name
         if (!this.isFilm(url)) {
@@ -167,7 +184,8 @@ export default {
         }
         return [name, this.generatePath(url)]
       }))
-      return chars.concat(dontGetRelevant)
+      console.log(chars, dontGetRelevant)
+      return this.checkForTheSame(chars, dontGetRelevant)
     }
   },
   watch: {

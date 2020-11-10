@@ -41,7 +41,11 @@ export default {
 
   .loading {
     width: 100%;
-    height: 10.625rem;
+    margin: 55% 0;
+
+    span {
+      color: var(--color-grey-dimm);
+    }
   }
 }
 </style>

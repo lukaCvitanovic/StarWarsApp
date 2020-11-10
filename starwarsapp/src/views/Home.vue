@@ -94,12 +94,19 @@ export default {
   }
 }
 @media (min-width: 67.625rem) {
-  #home .content {
-    flex-direction: row;
+  #home {
+    align-items: center;
 
-    .search-options {
-      width: var(--measure-s);
-      margin-right: var(--spc-xl);
+    .content {
+      width: min-content;
+      margin: 0 auto;
+      flex-direction: row;
+
+      .search-options {
+        width: var(--measure-s);
+        margin-right: var(--spc-xl);
+        margin-left: 0;
+      }
     }
   }
 }

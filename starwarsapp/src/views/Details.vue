@@ -184,7 +184,6 @@ export default {
         }
         return [name, this.generatePath(url)]
       }))
-      console.log(chars, dontGetRelevant)
       return this.checkForTheSame(chars, dontGetRelevant)
     }
   },

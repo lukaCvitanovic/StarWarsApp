@@ -3,7 +3,7 @@
     <span class="details-panel-content-description mb-l">Details:</span>
     <result-detail
       v-for="[name, value] in detailsWithoutName"
-      :key="value"
+      :key="name+value"
       :detailName="name"
       :detailValue="value" />
   </div>

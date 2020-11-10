@@ -31,8 +31,6 @@ export default {
 
 <style lang="scss" scoped>
 .result-details {
-  .name {
-    font-size: var(--font-size-l);
-  }
+  max-width: 50%;
 }
 </style>

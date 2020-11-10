@@ -1,5 +1,5 @@
 <template>
-  <div class="result-detail flex-h align-center justify-space-between mb-m">
+  <div class="result-detail flex-h align-start justify-space-between mb-m">
     <span class="result-detail-name mr-l">{{ formatedDetailName.replace('_', ' ') }}:</span>
     <span class="result-detail-value">{{ detailValue.replace('_', ' ') }}</span>
   </div>
@@ -35,6 +35,7 @@ export default {
   &-value {
     font-size: var(--font-size-s);
     color: var(--color-grey-dimm);
+    text-align: right;
   }
 }
 </style>

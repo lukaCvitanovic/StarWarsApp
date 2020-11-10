@@ -15,7 +15,7 @@ $spaceings: (
     --measure-m: 36.375rem;
     --measure-l: 50.25rem;
 
-    --min-width: 21.875rem;
+    --min-width: 350px;
 
     @each $name, $value in $spaceings {
         .ma-#{$name} {

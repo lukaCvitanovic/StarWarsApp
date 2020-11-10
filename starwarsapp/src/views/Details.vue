@@ -86,10 +86,13 @@ export default {
     onlyArraysAndRest (array) {
       const [onlyArray, rest] = array.reduce((acc, curent) => {
         const [onlyArray, rest] = acc
-        const [, element] = curent
-        typeof element === 'object' || this.isUrl(element)
-          ? onlyArray.push(element)
-          : rest.push(curent)
+        const [key, element] = curent
+        if (element === null) rest.push([key, 'null'])
+        else {
+          typeof element === 'object' || this.isUrl(element)
+            ? onlyArray.push(element)
+            : rest.push(curent)
+        }
         return acc
       }, [[], []])
       return [this.singleDepthArray(onlyArray), rest]

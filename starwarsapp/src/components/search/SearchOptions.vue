@@ -30,10 +30,14 @@ export default {
     buttonText: {
       type: String,
       required: true
+    },
+    error: {
+      type: String,
+      default: ''
     }
   },
   computed: {
-    disabled: vm => !vm.value.length
+    disabled: vm => !vm.value.length || vm.error
   },
   components: {
     RadioButtons,

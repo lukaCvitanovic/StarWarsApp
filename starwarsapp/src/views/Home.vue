@@ -2,8 +2,15 @@
   <div id="home">
     <app-header />
     <div class="content align-start justify-center">
-      <search-options class="search-options mt-xl" @search="search" :button-text="searchButtonText" />
-      <search-results class="search-results mt-xl" :results="results" :isFilm="isFilm" />
+      <search-options class="search-options mt-xl"
+        @search="search"
+        :error="error"
+        :button-text="searchButtonText" />
+      <search-results
+        class="search-results mt-xl"
+        :results="results"
+        :isFilm="isFilm"
+        :error-msg="error" />
     </div>
   </div>
 </template>
@@ -21,19 +28,22 @@ export default {
   data: () => ({
     results: [],
     isFilm: false,
-    searchButtonText: 'Search'
+    searchButtonText: 'Search',
+    error: ''
   }),
   methods: {
     async search ({ picked: type, value: name }) {
       this.searchButtonText = 'Searching...'
       if (type === PEOPLE) {
-        const { data: { results } } = await api.getPeopleByName(name)
-        this.isFilm = false
-        this.results = results
+        api.getPeopleByName(name).then(({ data: { results } }) => {
+          this.isFilm = false
+          this.results = results
+        }).catch(error => { this.error = error })
       } else {
-        const { data: { results } } = await api.getMoviesByName(name)
-        this.isFilm = true
-        this.results = results
+        api.getMoviesByName(name).then(({ data: { results } }) => {
+          this.isFilm = true
+          this.results = results
+        }).catch(error => { this.error = error })
       }
       this.searchButtonText = 'Search'
     }

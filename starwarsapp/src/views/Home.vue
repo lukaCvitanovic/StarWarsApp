@@ -35,15 +35,21 @@ export default {
     async search ({ picked: type, value: name }) {
       this.searchButtonText = 'Searching...'
       if (type === PEOPLE) {
-        api.getPeopleByName(name).then(({ data: { results } }) => {
+        try {
+          const { data: { results } } = await api.getPeopleByName(name)
           this.isFilm = false
           this.results = results
-        }).catch(error => { this.error = error })
+        } catch (error) {
+          this.error = error
+        }
       } else {
-        api.getMoviesByName(name).then(({ data: { results } }) => {
+        try {
+          const { data: { results } } = await api.getMoviesByName(name)
           this.isFilm = true
           this.results = results
-        }).catch(error => { this.error = error })
+        } catch (error) {
+          this.error = error
+        }
       }
       this.searchButtonText = 'Search'
     }

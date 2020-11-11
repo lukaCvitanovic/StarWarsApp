@@ -37,7 +37,10 @@ export default {
     }
   },
   computed: {
-    disabled: vm => !vm.value.length || vm.error
+    disabled: vm => {
+      if (!vm.value || vm.error) return true
+      else return false
+    }
   },
   components: {
     RadioButtons,

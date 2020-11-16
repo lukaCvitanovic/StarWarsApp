@@ -10,6 +10,8 @@
 
 <script>
 import BaseButton from '../common/BaseButton'
+import searchResults from '@/config/searchResults'
+const { PEOPLE, FILMS } = searchResults
 
 export default {
   name: 'search-result',
@@ -25,15 +27,16 @@ export default {
   },
   methods: {
     onClick () {
-      this.$router.push({ path: `details/${this.url}` })
+      this.$router.push({ path: this.url })
     }
   },
   computed: {
     url () {
-      const place = this.link.search('people')
-      return place !== -1
-        ? this.link.slice(place, this.link.length)
-        : this.link.slice(this.link.search('films'), this.link.length)
+      const isPeople = this.link.search(PEOPLE)
+      const partialUrl = isPeople !== -1
+        ? this.link.slice(isPeople, this.link.length)
+        : this.link.slice(this.link.search(FILMS), this.link.length)
+      return `details/${partialUrl}`
     }
   },
   components: {

@@ -1,6 +1,6 @@
 <template>
   <button class="base-button" v-bind="$attrs" v-on="$listeners">
-    <span>{{ text }}</span>
+    <slot><span class="button-span">{{ text }}</span></slot>
   </button>
 </template>
 
@@ -10,7 +10,7 @@ export default {
   props: {
     text: {
       type: String,
-      required: true
+      default: ''
     },
     disable: {
       type: Boolean,
@@ -31,18 +31,6 @@ export default {
 
   &:disabled {
     background-color: var(--color-grey);
-  }
-
-  span {
-    font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: var(--color-white);
-    text-transform: uppercase;
   }
 }
 </style>

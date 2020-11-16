@@ -116,7 +116,7 @@ export default {
     .details-panel-content,
     .details-film-panel .details-film-panel-content {
       flex-direction: row;
-      align-items: flex-start;
+      align-items: stretch;
     }
   }
 }

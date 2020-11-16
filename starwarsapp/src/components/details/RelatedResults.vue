@@ -4,7 +4,7 @@
     <div class="error flex-v justify-center" v-if="errorMsg">
       <span>{{ errorMsg }}</span>
     </div>
-    <div v-else-if="relevant" class="related-results-box flex-h flex-wrap">
+    <div v-else-if="!relevant" class="related-results-box flex-h flex-wrap">
       <related-result
         class="mr-s"
         v-for="[name, url] in relevant"
@@ -52,7 +52,7 @@ export default {
 
   .loading {
     width: 100%;
-    margin: 55% 0;
+    height: 100%;
 
     span {
       color: var(--color-grey-dimm);

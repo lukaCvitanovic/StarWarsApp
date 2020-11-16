@@ -2,9 +2,9 @@
   <div class="result-details flex-v align-start justify-center">
     <span class="details-panel-content-description mb-l">Details:</span>
     <result-detail
-      v-for="[name, value] in detailsWithoutName"
-      :key="name+value"
-      :detailName="name"
+      v-for="[key, value] in detailsWithoutName"
+      :key="key+value"
+      :detailName="key"
       :detailValue="value" />
   </div>
 </template>

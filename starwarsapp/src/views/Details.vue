@@ -1,9 +1,9 @@
 <template>
   <div class="details">
     <app-header />
-    <div class="content flex-h align-center justify-center my-xl">
+    <div class="content flex-h justify-center my-xl">
       <details-panel
-        class="details-panel"
+        class="details-panel mt-xl"
         :error-msg="errorMsg"
         :name="name"
         :openingCrawl="openingCrawl"
@@ -249,6 +249,7 @@ export default {
 
   .content {
     width: 100%;
+    padding-top: var(--header-height);
     padding-left: var(--spc-xl);
     padding-right: var(--spc-xl);
 
@@ -258,8 +259,15 @@ export default {
   }
 }
 @media (min-width: 54rem) {
-  .details .content .details-panel {
-    width: var(--measure-l);
+  .details .content {
+    height: 100vh;
+    margin: 0;
+
+    .details-panel {
+      width: var(--measure-l);
+      min-height: 21.875rem;
+      height: min-content;
+    }
   }
 }
 </style>

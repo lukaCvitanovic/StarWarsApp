@@ -105,6 +105,8 @@ export default {
 
     .content {
       width: min-content;
+      height: 100%;
+      padding-top: var(--header-height);
       margin: 0 auto;
       flex-direction: row;
 

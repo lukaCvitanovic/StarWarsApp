@@ -6,6 +6,7 @@
     </div>
     <div v-else-if="relevant" class="related-results-box flex-h flex-wrap">
       <related-result
+        class="mr-s"
         v-for="[name, url] in relevant"
         :key="url"
         :title="name"

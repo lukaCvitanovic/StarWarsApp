@@ -25,11 +25,6 @@ export default {
       required: true
     }
   },
-  methods: {
-    onClick () {
-      this.$router.push({ path: this.url })
-    }
-  },
   computed: {
     url () {
       const isPeople = this.link.search(PEOPLE)

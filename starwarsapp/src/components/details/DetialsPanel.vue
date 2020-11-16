@@ -24,7 +24,9 @@
           :errorMsg="errorMsg" />
       </div>
     </div>
-    <base-button class="px-m mt-m" text="Go Back" @click="$router.push({ name: 'Home' })" />
+    <base-button class="px-m mt-m">
+      <router-link class="button-span" :to="{ name: 'Home' }">Go Back</router-link>
+    </base-button>
   </div>
 </template>
 

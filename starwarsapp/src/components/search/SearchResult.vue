@@ -2,9 +2,9 @@
   <div class="search-result flex-h align-center justify-space-between mt-m">
     <span class="search-result-name">{{ name }}</span>
     <base-button
-     class="go-to-details px-m"
-     text="Details"
-     @click="onClick" />
+     class="go-to-details px-m">
+     <router-link class="button-span" :to="url">Details</router-link>
+    </base-button>
   </div>
 </template>
 
@@ -46,7 +46,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search-result {
+.search-result  {
   text-align: left;
 }
 </style>

@@ -4,7 +4,7 @@
     <div class="error flex-v justify-center" v-if="errorMsg">
       <span>{{ errorMsg }}</span>
     </div>
-    <div v-else-if="!relevant" class="related-results-box flex-h flex-wrap">
+    <div v-else-if="relevant" class="related-results-box flex-h flex-wrap">
       <related-result
         class="mr-s"
         v-for="[name, url] in relevant"
@@ -12,14 +12,15 @@
         :title="name"
         :link="url" />
     </div>
-    <div class="loading flex-v justify-center" v-else>
-      <span>Loading...</span>
+    <div class="loading flex-v align-center justify-center" v-else>
+      <base-loader />
     </div>
   </div>
 </template>
 
 <script>
 import RelatedResult from './RelatedResult'
+import BaseLoader from '../common/BaseLoader'
 
 export default {
   name: 'RelatedResults',
@@ -37,7 +38,8 @@ export default {
     console.log(this.errorMsg)
   },
   components: {
-    RelatedResult
+    RelatedResult,
+    BaseLoader
   }
 }
 </script>

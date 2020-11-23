@@ -78,22 +78,11 @@ export default {
         return string.search('http') !== -1
       } else return false
     },
-    findReleventLimit (array) {
-      let i = 0
-      for (const [, value] of array) {
-        if (typeof value === 'object' || this.isUrl(value)) return i
-        i++
-      }
-      return array.length - 1
-    },
     generatePath (url) {
       return url.slice(url.search('/api') + '/api'.length)
     },
     isFilm (url) {
       return url.search('films') !== -1
-    },
-    isFilmOrPlanet (url) {
-      return this.isFilm(url) || url.search('planets') !== -1
     },
     arrayToUrls (object) {
       const urls = []
@@ -127,21 +116,7 @@ export default {
         }
         return acc
       }, [[], []])
-      return [this.singleDepthArray(onlyArray), rest]
-    },
-    singleDepthArray (array) {
-      return array.reduce((acc, curent) => {
-        return acc.concat(curent)
-      }, [])
-    },
-    checkForTheSame (checkArray, array) {
-      return array.reduce((acc, curent) => {
-        if (checkArray.includes(curent)) return acc
-        else {
-          acc.push(curent)
-          return acc
-        }
-      }, [])
+      return [lodash.flattenDeep(onlyArray), rest]
     },
     isTheSameUrl (url) {
       return this.generatePath(url) === this.removeDetailsFromUrl(this.$route.fullPath)

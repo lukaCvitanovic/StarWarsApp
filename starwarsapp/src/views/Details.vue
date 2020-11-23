@@ -17,7 +17,7 @@
 import AppHeader from '@/components/AppHeader'
 import DetailsPanel from '@/components/details/DetialsPanel.vue'
 import api from '@/api/search.js'
-import shuffle from 'lodash.shuffle'
+import lodash from 'lodash'
 import searchOptions from '@/config/searchOptions.js'
 const { PEOPLE } = searchOptions
 
@@ -160,15 +160,15 @@ export default {
       const { data } = await this.apiCall(path)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
-      let array = Object.keys(data).map(key => ([key, data[key]]))
-      array = array.slice(0, array.length - 3)
+      let array = lodash.toPairs(data)
+      array = lodash.dropRight(array, 3)
       let [tempRelevant, [[, name], ...rest]] = this.onlyArraysAndRest(array)
       this.name = name
       this.itemDetails = rest
       tempRelevant = await this.formatRelevant(tempRelevant)
       let relevant = await this.getRelevantForOthers(tempRelevant)
-      relevant = shuffle(relevant)
-      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
+      relevant = lodash.shuffle(relevant)
+      this.relevant = lodash.take(relevant, RELEVANT_CHARACTERS_LIMIT)
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
@@ -178,37 +178,35 @@ export default {
       if (this.itemDetails !== null) this.itemDetails = null
       this.openingCrawl = data.opening_crawl
       this.$delete(data, 'opening_crawl')
-      let array = Object.keys(data).map(key => ([key, data[key]]))
-      array = array.slice(0, array.length - 3)
-      const limit = this.findReleventLimit(array)
-      const [[, name], ...rest] = array.slice(0, limit)
+      let array = lodash.toPairs(data)
+      array = lodash.dropRight(array, 3)
+      let [relevant, [[, name], ...rest]] = this.onlyArraysAndRest(array)
       this.name = name
       this.itemDetails = rest
-      let relevant = array.slice(limit)
       relevant = await this.formatRelevant(relevant)
-      relevant = shuffle(relevant)
-      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
+      relevant = lodash.shuffle(relevant)
+      this.relevant = lodash.take(relevant, RELEVANT_CHARACTERS_LIMIT)
     },
     async getRelevantForOthers (relevant) {
-      let dontGetRelevant = []
-      let frstDegCahrs = []
-      for (const item of relevant) {
-        const [, url] = item
+      let [dontGetRelevant, frstDegCahrs] = await relevant.reduce(async (acc, current) => {
+        let tempAcc = await acc
+        let [dont, first] = tempAcc
+        const [, url] = current
         if (!this.isTheSameUrl(url)) {
           let { data } = await this.apiCall(url)
-          data = this.singleDepthArray(this.onlyArrays(Object.entries(data)))
-          if (!data.length) dontGetRelevant.push(item)
+          data = lodash.flattenDeep(this.onlyArrays(lodash.toPairs(data)))
+          if (!data.length) dont.push(current)
           else {
-            if (data.length > DATA_SIZE_LIMIT) {
-              data = shuffle(data).slice(0, DATA_SIZE_LIMIT)
-            }
-            frstDegCahrs = this.checkForTheSame(frstDegCahrs, data)
+            if (data.length > DATA_SIZE_LIMIT) data = lodash.take(lodash.shuffle(data), DATA_SIZE_LIMIT)
+            first = lodash.union(first, data)
           }
         }
-      }
-      dontGetRelevant = this.checkForTheSame(dontGetRelevant, relevant)
-      frstDegCahrs = frstDegCahrs.slice(0, RELEVANT_CHARACTERS_LIMIT)
-      const chars = await Promise.all(frstDegCahrs.map(async url => {
+        tempAcc = [dont, first]
+        return tempAcc
+      }, Promise.resolve([[], []]))
+      dontGetRelevant = lodash.union(dontGetRelevant, relevant)
+      frstDegCahrs = lodash.take(frstDegCahrs, RELEVANT_CHARACTERS_LIMIT)
+      let chars = await Promise.all(frstDegCahrs.map(async url => {
         let name
         if (!this.isFilm(url)) {
           const { data } = await this.apiCall(url)
@@ -219,7 +217,9 @@ export default {
         }
         return [name, this.generatePath(url)]
       }))
-      return this.checkForTheSame(chars, dontGetRelevant)
+      chars = lodash.unionWith(chars, dontGetRelevant, lodash.isEqual)
+      console.log(chars)
+      return chars
     }
   },
   watch: {

@@ -20,10 +20,50 @@ function get (path) {
   return client.get(path)
 }
 
+function callGet (url) {
+  return new Promise((resolve, reject) => {
+    get(url)
+      .then(data => resolve(data))
+      .catch(error => reject(error))
+  })
+}
+
+function callPeopleById (id) {
+  return new Promise((resolve, reject) => {
+    getPeopleById(id)
+      .then(data => resolve(data))
+      .catch(error => reject(error))
+  })
+}
+
+function callPeopleByName (name) {
+  return new Promise((resolve, reject) => {
+    getPeopleByName(name)
+      .then(data => resolve(data))
+      .catch(error => reject(error))
+  })
+}
+
+function callMoviesById (id) {
+  return new Promise((resolve, reject) =>
+    getMoviesById(id)
+      .then(data => resolve(data))
+      .catch(error => reject(error))
+  )
+}
+
+function callMoviesByName (name) {
+  return new Promise((resolve, reject) => {
+    getMoviesByName(name)
+      .then(data => resolve(data))
+      .catch(error => reject(error))
+  })
+}
+
 export default {
-  getPeopleByName,
-  getPeopleById,
-  getMoviesByName,
-  getMoviesById,
-  get
+  callGet,
+  callMoviesById,
+  callMoviesByName,
+  callPeopleById,
+  callPeopleByName
 }

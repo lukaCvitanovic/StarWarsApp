@@ -75,7 +75,7 @@ export default {
   background-color: var(--color-white);
   min-width: var(--min-width);
 
-  &-content { 
+  &-content {
     width: 100%;
     display: flex;
     flex-direction: column;

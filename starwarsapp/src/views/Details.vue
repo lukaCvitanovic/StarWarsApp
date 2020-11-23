@@ -40,36 +40,6 @@ export default {
         ? await this.getDetailsFilms({ type, id })
         : await this.getDetailsOthers(this.removeDetailsFromUrl(fullPath, type), type)
     },
-    apiCall (url) {
-      return new Promise((resolve, reject) => {
-        api.get(url)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
-    apiCallPeople (id) {
-      return new Promise((resolve, reject) => {
-        api.getPeopleById(id)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
-    apiCallMovies (id) {
-      return new Promise((resolve, reject) => {
-        api.getMoviesById(id)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
     removeDetailsFromUrl (url, type) {
       return url.slice(url.search(type))
     },
@@ -127,12 +97,12 @@ export default {
         const key = url.search('films') !== -1
           ? 'title'
           : 'name'
-        const { data } = await this.apiCall(this.generatePath(url))
+        const { data } = await api.callGet(this.generatePath(url))
         return [data[key], this.generatePath(url)]
       }))
     },
     async getDetailsOthers (path, type) {
-      const { data } = await this.apiCall(path)
+      const { data } = await api.callGet(path)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       let array = lodash.toPairs(data)
@@ -147,8 +117,8 @@ export default {
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
-        ? await this.apiCallPeople(id)
-        : await this.apiCallMovies(id)
+        ? await api.callPeopleById(id)
+        : await api.callMoviesById(id)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       this.openingCrawl = data.opening_crawl
@@ -168,7 +138,7 @@ export default {
         let [dont, first] = tempAcc
         const [, url] = current
         if (!this.isTheSameUrl(url)) {
-          let { data } = await this.apiCall(url)
+          let { data } = await api.callGet(url)
           data = lodash.flattenDeep(this.onlyArrays(lodash.toPairs(data)))
           if (!data.length) dont.push(current)
           else {
@@ -184,10 +154,10 @@ export default {
       let chars = await Promise.all(frstDegCahrs.map(async url => {
         let name
         if (!this.isFilm(url)) {
-          const { data } = await this.apiCall(url)
+          const { data } = await api.callGet(url)
           name = data.name
         } else {
-          const { data: { title } } = await this.apiCall(url)
+          const { data: { title } } = await api.callGet(url)
           name = title
         }
         return [name, this.generatePath(url)]
@@ -205,8 +175,12 @@ export default {
       }
     }
   },
-  async created () {
-    await this.getDetails(this.$route)
+  created () {
+    this.getDetails(this.$route).catch(error => {
+      console.log(this.errorMsg, 'errorMsg')
+      console.log(error)
+      this.errorMsg = error.toString()
+    })
   },
   components: {
     AppHeader,

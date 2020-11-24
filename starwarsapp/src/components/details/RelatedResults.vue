@@ -34,9 +34,6 @@ export default {
       default: ''
     }
   },
-  created () {
-    console.log(this.errorMsg)
-  },
   components: {
     RelatedResult,
     BaseLoader

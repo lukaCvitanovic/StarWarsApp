@@ -1,7 +1,9 @@
 <template>
   <input
+    autofocus
     class="search-input"
     @input="$emit('input', $event.target.value)"
+    @keyup.enter="$emit('submit')"
     :placeholder="plh"
     :value="value" >
 </template>

@@ -1,15 +1,13 @@
 <template>
-  <div
-    class="search-options flex-v justify-center align-start box-shadow pa-xl"
-  >
+  <div class="search-options flex-v justify-center align-start box-shadow pa-xl">
     <span class="search-options-label"> What are you searching for? </span>
     <radio-buttons class="mt-l" v-model="picked" />
-    <search-input class="mt-l px-m" v-model="value" :search-type="picked" />
+    <search-input class="mt-l px-m" v-model="value" @submit="doSearch" :search-type="picked" />
     <base-button
       class="search-button mt-l"
       :text="buttonText"
       :disabled="disabled"
-      @click="$emit('search', { picked, value })"
+      @click="doSearch"
     />
   </div>
 </template>
@@ -36,6 +34,9 @@ export default {
       type: String,
       default: ''
     }
+  },
+  methods: {
+    doSearch () { this.$emit('search', { picked: this.picked, value: this.value }) }
   },
   computed: {
     disabled: vm => !vm.value || !!vm.error

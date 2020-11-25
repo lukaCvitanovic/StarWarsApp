@@ -12,9 +12,7 @@
         :title="name"
         :link="url" />
     </div>
-    <div class="loading flex-v align-center justify-center" v-else>
-      <base-loader />
-    </div>
+    <base-loader class="loading flex-v align-center justify-center" v-else />
   </div>
 </template>
 
@@ -60,7 +58,7 @@ export default {
 
   .error {
     width: 100%;
-    margin: 55% 0;
+    height: 100%;
 
     span {
       color: red;

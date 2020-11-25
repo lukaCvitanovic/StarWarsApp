@@ -1,7 +1,7 @@
 <template>
   <div class="related-result">
     <router-link :to="to">{{ title }}</router-link>
-    <span>, </span>
+    <span>,</span>
   </div>
 </template>
 

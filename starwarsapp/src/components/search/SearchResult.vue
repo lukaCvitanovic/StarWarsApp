@@ -2,14 +2,16 @@
   <div class="search-result flex-h align-center justify-space-between mt-m">
     <span class="search-result-name">{{ name }}</span>
     <base-button
-     class="go-to-details px-m"
-     text="Details"
-     @click="onClick" />
+     class="go-to-details px-m">
+     <router-link class="button-span" :to="url">Details</router-link>
+    </base-button>
   </div>
 </template>
 
 <script>
 import BaseButton from '../common/BaseButton'
+import searchResults from '@/config/searchResults'
+const { PEOPLE, FILMS } = searchResults
 
 export default {
   name: 'search-result',
@@ -23,17 +25,13 @@ export default {
       required: true
     }
   },
-  methods: {
-    onClick () {
-      this.$router.push({ path: `details/${this.url}` })
-    }
-  },
   computed: {
     url () {
-      const place = this.link.search('people')
-      return place !== -1
-        ? this.link.slice(place, this.link.length)
-        : this.link.slice(this.link.search('films'), this.link.length)
+      const isPeople = this.link.search(PEOPLE)
+      const partialUrl = isPeople !== -1
+        ? this.link.slice(isPeople, this.link.length)
+        : this.link.slice(this.link.search(FILMS), this.link.length)
+      return `details/${partialUrl}`
     }
   },
   components: {
@@ -43,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search-result {
+.search-result  {
   text-align: left;
 }
 </style>

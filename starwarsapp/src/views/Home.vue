@@ -36,7 +36,7 @@ export default {
       this.searchButtonText = 'Searching...'
       if (type === PEOPLE) {
         try {
-          const { data: { results } } = await api.getPeopleByName(name)
+          const { data: { results } } = await api.callPeopleByName(name)
           this.isFilm = false
           this.results = results
         } catch (error) {
@@ -44,7 +44,7 @@ export default {
         }
       } else {
         try {
-          const { data: { results } } = await api.getMoviesByName(name)
+          const { data: { results } } = await api.callMoviesByName(name)
           this.isFilm = true
           this.results = results
         } catch (error) {
@@ -105,6 +105,8 @@ export default {
 
     .content {
       width: min-content;
+      height: 100%;
+      padding-top: var(--header-height);
       margin: 0 auto;
       flex-direction: row;
 

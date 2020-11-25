@@ -26,4 +26,16 @@ $colors: (
     .border {
         border: border solid 0.0625rem var(--color-grey-dimm-75);
     }
+    .button-span {
+        text-decoration: none;
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: var(--color-white);
+        text-transform: uppercase;
+    }
 }

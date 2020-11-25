@@ -24,7 +24,9 @@
           :errorMsg="errorMsg" />
       </div>
     </div>
-    <base-button class="px-m mt-m" text="Go Back" @click="$router.push({ name: 'Home' })" />
+    <base-button class="px-m mt-m">
+      <router-link class="button-span" :to="{ name: 'Home' }">Go Back</router-link>
+    </base-button>
   </div>
 </template>
 
@@ -114,7 +116,7 @@ export default {
     .details-panel-content,
     .details-film-panel .details-film-panel-content {
       flex-direction: row;
-      align-items: flex-start;
+      align-items: stretch;
     }
   }
 }

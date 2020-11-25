@@ -1,9 +1,9 @@
 <template>
   <div class="details">
     <app-header />
-    <div class="content flex-h align-center justify-center my-xl">
+    <div class="content flex-h justify-center my-xl">
       <details-panel
-        class="details-panel"
+        class="details-panel mt-xl"
         :error-msg="errorMsg"
         :name="name"
         :openingCrawl="openingCrawl"
@@ -17,7 +17,7 @@
 import AppHeader from '@/components/AppHeader'
 import DetailsPanel from '@/components/details/DetialsPanel.vue'
 import api from '@/api/search.js'
-import shuffle from 'lodash.shuffle'
+import lodash from 'lodash'
 import searchOptions from '@/config/searchOptions.js'
 const { PEOPLE } = searchOptions
 
@@ -40,36 +40,6 @@ export default {
         ? await this.getDetailsFilms({ type, id })
         : await this.getDetailsOthers(this.removeDetailsFromUrl(fullPath, type), type)
     },
-    apiCall (url) {
-      return new Promise((resolve, reject) => {
-        api.get(url)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
-    apiCallPeople (id) {
-      return new Promise((resolve, reject) => {
-        api.getPeopleById(id)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
-    apiCallMovies (id) {
-      return new Promise((resolve, reject) => {
-        api.getMoviesById(id)
-          .then(data => resolve(data))
-          .catch(error => {
-            this.errorMsg = error
-            reject(error)
-          })
-      })
-    },
     removeDetailsFromUrl (url, type) {
       return url.slice(url.search(type))
     },
@@ -78,22 +48,11 @@ export default {
         return string.search('http') !== -1
       } else return false
     },
-    findReleventLimit (array) {
-      let i = 0
-      for (const [, value] of array) {
-        if (typeof value === 'object' || this.isUrl(value)) return i
-        i++
-      }
-      return array.length - 1
-    },
     generatePath (url) {
       return url.slice(url.search('/api') + '/api'.length)
     },
     isFilm (url) {
       return url.search('films') !== -1
-    },
-    isFilmOrPlanet (url) {
-      return this.isFilm(url) || url.search('planets') !== -1
     },
     arrayToUrls (object) {
       const urls = []
@@ -127,21 +86,7 @@ export default {
         }
         return acc
       }, [[], []])
-      return [this.singleDepthArray(onlyArray), rest]
-    },
-    singleDepthArray (array) {
-      return array.reduce((acc, curent) => {
-        return acc.concat(curent)
-      }, [])
-    },
-    checkForTheSame (checkArray, array) {
-      return array.reduce((acc, curent) => {
-        if (checkArray.includes(curent)) return acc
-        else {
-          acc.push(curent)
-          return acc
-        }
-      }, [])
+      return [lodash.flattenDeep(onlyArray), rest]
     },
     isTheSameUrl (url) {
       return this.generatePath(url) === this.removeDetailsFromUrl(this.$route.fullPath)
@@ -152,74 +97,73 @@ export default {
         const key = url.search('films') !== -1
           ? 'title'
           : 'name'
-        const { data } = await this.apiCall(this.generatePath(url))
+        const { data } = await api.callGet(this.generatePath(url))
         return [data[key], this.generatePath(url)]
       }))
     },
     async getDetailsOthers (path, type) {
-      const { data } = await this.apiCall(path)
+      const { data } = await api.callGet(path)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
-      let array = Object.keys(data).map(key => ([key, data[key]]))
-      array = array.slice(0, array.length - 3)
+      let array = lodash.toPairs(data)
+      array = lodash.dropRight(array, 3)
       let [tempRelevant, [[, name], ...rest]] = this.onlyArraysAndRest(array)
       this.name = name
       this.itemDetails = rest
       tempRelevant = await this.formatRelevant(tempRelevant)
       let relevant = await this.getRelevantForOthers(tempRelevant)
-      relevant = shuffle(relevant)
-      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
+      relevant = lodash.shuffle(relevant)
+      this.relevant = lodash.take(relevant, RELEVANT_CHARACTERS_LIMIT)
     },
     async getDetailsFilms ({ type, id }) {
       const { data } = type.toUpperCase() === PEOPLE
-        ? await this.apiCallPeople(id)
-        : await this.apiCallMovies(id)
+        ? await api.callPeopleById(id)
+        : await api.callMoviesById(id)
       if (this.relevant !== null) this.relevant = null
       if (this.itemDetails !== null) this.itemDetails = null
       this.openingCrawl = data.opening_crawl
       this.$delete(data, 'opening_crawl')
-      let array = Object.keys(data).map(key => ([key, data[key]]))
-      array = array.slice(0, array.length - 3)
-      const limit = this.findReleventLimit(array)
-      const [[, name], ...rest] = array.slice(0, limit)
+      let array = lodash.toPairs(data)
+      array = lodash.dropRight(array, 3)
+      let [relevant, [[, name], ...rest]] = this.onlyArraysAndRest(array)
       this.name = name
       this.itemDetails = rest
-      let relevant = array.slice(limit)
       relevant = await this.formatRelevant(relevant)
-      relevant = shuffle(relevant)
-      this.relevant = relevant.slice(0, RELEVANT_CHARACTERS_LIMIT)
+      relevant = lodash.shuffle(relevant)
+      this.relevant = lodash.take(relevant, RELEVANT_CHARACTERS_LIMIT)
     },
     async getRelevantForOthers (relevant) {
-      let dontGetRelevant = []
-      let frstDegCahrs = []
-      for (const item of relevant) {
-        const [, url] = item
+      let [dontGetRelevant, frstDegCahrs] = await relevant.reduce(async (acc, current) => {
+        let tempAcc = await acc
+        let [dont, first] = tempAcc
+        const [, url] = current
         if (!this.isTheSameUrl(url)) {
-          let { data } = await this.apiCall(url)
-          data = this.singleDepthArray(this.onlyArrays(Object.entries(data)))
-          if (!data.length) dontGetRelevant.push(item)
+          let { data } = await api.callGet(url)
+          data = lodash.flattenDeep(this.onlyArrays(lodash.toPairs(data)))
+          if (!data.length) dont.push(current)
           else {
-            if (data.length > DATA_SIZE_LIMIT) {
-              data = shuffle(data).slice(0, DATA_SIZE_LIMIT)
-            }
-            frstDegCahrs = this.checkForTheSame(frstDegCahrs, data)
+            if (data.length > DATA_SIZE_LIMIT) data = lodash.take(lodash.shuffle(data), DATA_SIZE_LIMIT)
+            first = lodash.union(first, data)
           }
         }
-      }
-      dontGetRelevant = this.checkForTheSame(dontGetRelevant, relevant)
-      frstDegCahrs = frstDegCahrs.slice(0, RELEVANT_CHARACTERS_LIMIT)
-      const chars = await Promise.all(frstDegCahrs.map(async url => {
+        tempAcc = [dont, first]
+        return tempAcc
+      }, Promise.resolve([[], []]))
+      dontGetRelevant = lodash.union(dontGetRelevant, relevant)
+      frstDegCahrs = lodash.take(frstDegCahrs, RELEVANT_CHARACTERS_LIMIT)
+      let chars = await Promise.all(frstDegCahrs.map(async url => {
         let name
         if (!this.isFilm(url)) {
-          const { data } = await this.apiCall(url)
+          const { data } = await api.callGet(url)
           name = data.name
         } else {
-          const { data: { title } } = await this.apiCall(url)
+          const { data: { title } } = await api.callGet(url)
           name = title
         }
         return [name, this.generatePath(url)]
       }))
-      return this.checkForTheSame(chars, dontGetRelevant)
+      chars = lodash.unionWith(chars, dontGetRelevant, lodash.isEqual)
+      return chars
     }
   },
   watch: {
@@ -230,8 +174,10 @@ export default {
       }
     }
   },
-  async created () {
-    await this.getDetails(this.$route)
+  created () {
+    this.getDetails(this.$route).catch(error => {
+      this.errorMsg = error.toString()
+    })
   },
   components: {
     AppHeader,
@@ -249,6 +195,7 @@ export default {
 
   .content {
     width: 100%;
+    padding-top: var(--header-height);
     padding-left: var(--spc-xl);
     padding-right: var(--spc-xl);
 
@@ -258,8 +205,15 @@ export default {
   }
 }
 @media (min-width: 54rem) {
-  .details .content .details-panel {
-    width: var(--measure-l);
+  .details .content {
+    height: 100vh;
+    margin: 0;
+
+    .details-panel {
+      width: var(--measure-l);
+      min-height: 21.875rem;
+      height: min-content;
+    }
   }
 }
 </style>

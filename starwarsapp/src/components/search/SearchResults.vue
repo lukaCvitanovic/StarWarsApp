@@ -7,13 +7,10 @@
         <span>{{ errorMsg }}</span>
       </div>
       <div v-else-if="!results.length" class="no-results">
-        <span>
+        <pre>
           There are zero matches.
-        </span>
-        <br/>
-        <span>
           Use the form to search for People of Movies.
-        </span>
+        </pre>
       </div>
       <div v-else class="results-wrapper">
         <div class="results" v-if="!isFilm">
@@ -74,7 +71,8 @@ export default {
     height: 100%;
 
     .no-results {
-      span {
+      pre {
+        font-family: var(--font-family);
         color: var(--color-grey);
       }
     }

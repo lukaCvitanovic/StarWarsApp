@@ -1,7 +1,7 @@
 <template>
   <div class="result-detail flex-h align-start justify-space-between mb-m">
-    <span class="result-detail-name mr-l">{{ formatedDetailName.replace('_', ' ') }}:</span>
-    <span class="result-detail-value">{{ detailValue.replace('_', ' ') }}</span>
+    <span class="result-detail-name mr-l">{{ formatedDetailName }}:</span>
+    <span class="result-detail-value">{{ detailValue }}</span>
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
     }
   },
   computed: {
-    formatedDetailName: vm => vm.detailName.charAt(0).toUpperCase() + vm.detailName.slice(1)
+    formatedDetailName: vm => vm.detailName.replace('_', ' ')
   }
 }
 </script>
@@ -27,6 +27,7 @@ export default {
 <style lang="scss" scoped>
 .result-detail {
   width: 100%;
+  text-transform: capitalize;
 
   &-name {
     font-size: var(--fonz-size-s);

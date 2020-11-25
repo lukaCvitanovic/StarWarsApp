@@ -14,6 +14,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-header {
+  position: fixed;
   width: 100%;
   height: 3.125rem;
   background-color: var(--color-white);

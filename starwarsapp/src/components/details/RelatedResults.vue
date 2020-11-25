@@ -6,19 +6,19 @@
     </div>
     <div v-else-if="relevant" class="related-results-box flex-h flex-wrap">
       <related-result
+        class="mr-s"
         v-for="[name, url] in relevant"
         :key="url"
         :title="name"
         :link="url" />
     </div>
-    <div class="loading flex-v justify-center" v-else>
-      <span>Loading...</span>
-    </div>
+    <base-loader class="loading flex-v align-center justify-center" v-else />
   </div>
 </template>
 
 <script>
 import RelatedResult from './RelatedResult'
+import BaseLoader from '../common/BaseLoader'
 
 export default {
   name: 'RelatedResults',
@@ -32,11 +32,9 @@ export default {
       default: ''
     }
   },
-  created () {
-    console.log(this.errorMsg)
-  },
   components: {
-    RelatedResult
+    RelatedResult,
+    BaseLoader
   }
 }
 </script>
@@ -51,7 +49,7 @@ export default {
 
   .loading {
     width: 100%;
-    margin: 55% 0;
+    height: 100%;
 
     span {
       color: var(--color-grey-dimm);
@@ -60,7 +58,7 @@ export default {
 
   .error {
     width: 100%;
-    margin: 55% 0;
+    height: 100%;
 
     span {
       color: red;

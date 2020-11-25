@@ -1,33 +1,15 @@
 <template>
   <div class="radio-buttons flex-h">
-    <div class="radio-button flex-h align-center">
-      <input
-        id="people"
-        type="radio"
-        :value="PEOPLE"
-        v-model="picked"
-        @change="onChange" >
-      <label class="radio-button-label ml-m" for="people">
-        People
-      </label>
-    </div>
-    <div class="radio-button flex-h align-center ml-xl">
-      <input
-        id="movies"
-        type="radio"
-        :value="MOVIES"
-        v-model="picked"
-        @change="onChange" >
-      <label class="radio-button-label ml-m" for="movies">
-        Movies
-      </label>
-    </div>
+    <radio-button
+      v-for="option in options"
+      :key="option"
+      :radioValue="option"
+      v-model="picked" />
   </div>
 </template>
 
 <script>
-import searchOptions from '@/config/searchOptions.js'
-const { PEOPLE, MOVIES } = searchOptions
+import RadioButton from './RadioButton'
 
 export default {
   name: 'radio-buttons',
@@ -36,13 +18,15 @@ export default {
     event: 'changed'
   },
   data: () => ({
-    picked: '',
-    PEOPLE: PEOPLE,
-    MOVIES: MOVIES
+    picked: ''
   }),
   props: {
     value: {
       type: String,
+      required: true
+    },
+    options: {
+      type: Array,
       required: true
     }
   },
@@ -53,6 +37,9 @@ export default {
   },
   created () {
     this.picked = this.value
+  },
+  components: {
+    RadioButton
   }
 }
 </script>

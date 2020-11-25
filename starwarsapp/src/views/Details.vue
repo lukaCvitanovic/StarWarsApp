@@ -163,7 +163,6 @@ export default {
         return [name, this.generatePath(url)]
       }))
       chars = lodash.unionWith(chars, dontGetRelevant, lodash.isEqual)
-      console.log(chars)
       return chars
     }
   },
@@ -177,8 +176,6 @@ export default {
   },
   created () {
     this.getDetails(this.$route).catch(error => {
-      console.log(this.errorMsg, 'errorMsg')
-      console.log(error)
       this.errorMsg = error.toString()
     })
   },

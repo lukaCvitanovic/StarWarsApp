@@ -1,34 +1,24 @@
 <template>
   <div class="radio-buttons flex-h">
-    <div class="radio-button flex-h align-center">
+    <div
+      v-for="(option, index) in options"
+      :key="option"
+      :class="['radio-button flex-h align-center', { 'ml-xl': index }]" >
       <input
-        id="people"
+        :id="option.toLowerCase()"
         type="radio"
-        :value="PEOPLE"
+        :value="option"
         v-model="picked"
-        @change="onChange" >
-      <label class="radio-button-label ml-m" for="people">
-        People
-      </label>
-    </div>
-    <div class="radio-button flex-h align-center ml-xl">
-      <input
-        id="movies"
-        type="radio"
-        :value="MOVIES"
-        v-model="picked"
-        @change="onChange" >
-      <label class="radio-button-label ml-m" for="movies">
-        Movies
+        @change="onChange"
+      />
+      <label class="radio-button-label ml-m" :for="option.toLowerCase()">
+        {{ option.toLowerCase() }}
       </label>
     </div>
   </div>
 </template>
 
 <script>
-import searchOptions from '@/config/searchOptions.js'
-const { PEOPLE, MOVIES } = searchOptions
-
 export default {
   name: 'radio-buttons',
   model: {
@@ -36,13 +26,15 @@ export default {
     event: 'changed'
   },
   data: () => ({
-    picked: '',
-    PEOPLE: PEOPLE,
-    MOVIES: MOVIES
+    picked: ''
   }),
   props: {
     value: {
       type: String,
+      required: true
+    },
+    options: {
+      type: Array,
       required: true
     }
   },
@@ -69,6 +61,7 @@ export default {
 
     &-label {
       font-size: var(--font-size-s);
+      text-transform: capitalize;
     }
   }
 }

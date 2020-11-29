@@ -1,7 +1,7 @@
 <template>
   <div class="search-options flex-v justify-center align-start box-shadow pa-xl">
     <span class="search-options-label"> What are you searching for? </span>
-    <radio-buttons class="mt-l" v-model="picked" />
+    <radio-buttons class="mt-l" v-model="picked" :options="options" />
     <search-input class="mt-l px-m" v-model="value" @submit="doSearch" :search-type="picked" />
     <base-button
       class="search-button mt-l"
@@ -17,12 +17,13 @@ import RadioButtons from './RadionButtons'
 import SearchInput from './SearchInput'
 import BaseButton from '../common/BaseButton'
 import searchOptions from '@/config/searchOptions.js'
-const { MOVIES } = searchOptions
+const { PEOPLE, MOVIES } = searchOptions
 
 export default {
   name: 'search-options',
   data: () => ({
-    picked: MOVIES,
+    picked: PEOPLE,
+    options: [PEOPLE, MOVIES],
     value: ''
   }),
   props: {

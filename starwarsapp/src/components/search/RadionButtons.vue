@@ -1,16 +1,24 @@
 <template>
   <div class="radio-buttons flex-h">
-    <radio-button
-      v-for="option in options"
+    <div
+      v-for="(option, index) in options"
       :key="option"
-      :radioValue="option"
-      v-model="picked" />
+      :class="['radio-button flex-h align-center', { 'ml-xl': index }]" >
+      <input
+        :id="option.toLowerCase()"
+        type="radio"
+        :value="option"
+        v-model="picked"
+        @change="onChange"
+      />
+      <label class="radio-button-label ml-m" :for="option.toLowerCase()">
+        {{ option.toLowerCase() }}
+      </label>
+    </div>
   </div>
 </template>
 
 <script>
-import RadioButton from './RadioButton'
-
 export default {
   name: 'radio-buttons',
   model: {
@@ -37,9 +45,6 @@ export default {
   },
   created () {
     this.picked = this.value
-  },
-  components: {
-    RadioButton
   }
 }
 </script>
@@ -56,6 +61,7 @@ export default {
 
     &-label {
       font-size: var(--font-size-s);
+      text-transform: capitalize;
     }
   }
 }
